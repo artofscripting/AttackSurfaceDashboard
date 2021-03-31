@@ -11,6 +11,7 @@ services:
       - TWILIO_API_KEY=
       - TWILIO_API_PHONE_TO=
       - TWILIO_API_PHONE_FROM=
+      - MAX_DOWN=10
   dashboard:
     build: ./Dashboard
     ports:

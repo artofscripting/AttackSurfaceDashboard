@@ -13,9 +13,8 @@ To connect to a container.
 
 ` docker exec -it <container name> /bin/bash`
 
-For easy management install Portainer
+For easy management install Portainer is install on port 9000
 
-`docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce`
 
 # Parts
 ## MassScanner
@@ -37,18 +36,7 @@ Manual run -
 All data is pushed to ElasticSearch Database
 
 ### MassScanner Has a cron job Scheduled by the Dockerfile to run every 10 mins for IP down detection.
-
-downdetector.py has client access keys for twilio also a phone number to send alert to. 10 in the following code is the number of down hosts to detect before sending a txt message.
-
-    if count_missing > 10:
-    
-    client = Client("ACfdbc4b0761b6bd81e357a093294f3b5e", "KEY")
-    
-    client.messages.create(to="+12815050561", from_="+13213042557", body="Downdetector Alert!")
-    
-    else:
-    
-    print("No Mass Outage Detected")
+downdetector.py
 
 All data is pushed to ElasticSearch Database
 
@@ -82,13 +70,7 @@ Manual run -
 ## wpscanner
 
 Folder wpscanner has “scan.py”
-Targets are selected from ElasticSearch Database. Wpscanner is run with an API key.
-
-    for row in target_list:
-    print(row["target"])
-    cmd = 'wpscan --url ' + row["target"] + ' --enumerate u --api-token KEY --format json > /code/wpscanner/' + row["namespace"] + '.json'
-    print(cmd)
-    os.system(cmd)
+Targets are selected from ElasticSearch Database. 
 
 Manual run - 
 
@@ -105,7 +87,8 @@ Manual run - python3 scan.py
 
 ## GVMScanner
 
-Must be run manually
+
+Must be run manually from host:8080
 
 Cron script must be run to schedule reports to dashboard.
 
@@ -129,6 +112,7 @@ docker-compose.yml
 >      TWILIO_API_PHONE_TO=
 >      TWILIO_API_PHONE_FROM=
 >      WPSCAN_API_KEY=
+>      MAX_DOWN= 
 
 Masscanner downdetector.py
 Set Limit for how many need to be down before Texting

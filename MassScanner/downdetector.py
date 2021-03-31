@@ -204,7 +204,7 @@ def checkhosts(namespace):
             es_log = esLog("downdetector", 'log', id , json.dumps(data, default=str))
             sendToES(es_log)
             print(data)
-    if count_missing > 10:
+    if count_missing > int(os.environ.get('MAX_DOWN')):
         client = Client(os.environ.get('TWILIO_API_CLIENT'),os.environ.get('TWILIO_API_KEY'))
         client.messages.create(to="+"+os.environ.get('TWILIO_API_PHONE_TO'), from_="+"+os.environ.get('TWILIO_API_PHONE_FROM'), body="Downdetector Alert!")
     else:
