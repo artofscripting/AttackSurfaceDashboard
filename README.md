@@ -37,12 +37,12 @@ For easy management install Portainer is install on port 9000
 - Greenbone's Vulnerability Management
 
 # Automation
-masscan scans every 5 mins
-wpscan runs once a day 
-nikto runs once a day
-GVM reports are pulled into database once a day
-amass scan runs once a day
-nmap vulnerability scan runs once a day agaist all live masscan targets
+- masscan scans every 5 mins
+- wpscan runs once a day 
+- nikto runs once a day
+- GVM reports are pulled into database once a day
+- amass scan runs once a day
+- nmap vulnerability scan runs once a day agaist all live masscan targets
 
 # Parts
 ## MassScanner
