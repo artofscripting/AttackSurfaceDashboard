@@ -25,7 +25,7 @@ For easy management install Portainer is install on port 9000
 |Dashboard |host:80|
 |PW Pusher |host:5003|
 
-#Apps
+# Apps
 - Sn1per Server
 - Nmap server
 - Kali Server
@@ -36,7 +36,7 @@ For easy management install Portainer is install on port 9000
 - Kibana
 - Greenbone's Vulnerability Management
 
-#Automation
+# Automation
 masscan scans every 5 mins
 wpscan runs once a day 
 nikto runs once a day
