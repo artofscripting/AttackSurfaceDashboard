@@ -2,6 +2,7 @@
 # Attack Surface Mapping Dashboard
 
 Start the enviroment
+From the folder that the docker-compose.yml file is in
 
 `docker-compose up ` 
 
