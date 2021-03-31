@@ -15,6 +15,26 @@ To connect to a container.
 
 For easy management install Portainer is install on port 9000
 
+# Links
+|Application| host:port|
+|-----|-----|
+|GVM |host:8080|
+|TargetSelector |host:5001|
+|Portainer |host:9000|
+|Kibana |host:5601|
+|Dashboard |host:80|
+|PW Pusher |host:5003|
+
+#Apps
+- Sn1per Server
+- Nmap server
+- Kali Server
+- WPScan
+- Nikto
+- Amass
+- masscan
+- Kibana
+- Greenbone's Vulnerability Management
 
 # Parts
 ## MassScanner
