@@ -1,0 +1,146 @@
+
+# Attack Surface Mapping Dashboard
+
+Start the enviroment
+
+`docker-compose up ` 
+
+or 
+
+ `docker-compose up --force-recreate  --build`
+
+To connect to a container.
+
+` docker exec -it <container name> /bin/bash`
+
+For easy management install Portainer
+
+`docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce`
+
+# Parts
+## MassScanner
+
+### MassScanner Has a cron job Scheduled by the Dockerfile to run every 5 mins for IP discovery from the targets.txt
+
+#### Targets.txt should have no new line after last line.
+Targets.txt should have the format 
+
+> NMAPTARGET,NETWORK_SEGMENT_TAG,ORG
+
+Each target must end with “,ORG”
+ORG is the tag that pushes the data to the dashboard.
+
+Manual run - 
+
+    python3 monitor.py
+
+All data is pushed to ElasticSearch Database
+
+### MassScanner Has a cron job Scheduled by the Dockerfile to run every 10 mins for IP down detection.
+
+downdetector.py has client access keys for twilio also a phone number to send alert to. 10 in the following code is the number of down hosts to detect before sending a txt message.
+
+    if count_missing > 10:
+    
+    client = Client("ACfdbc4b0761b6bd81e357a093294f3b5e", "KEY")
+    
+    client.messages.create(to="+12815050561", from_="+13213042557", body="Downdetector Alert!")
+    
+    else:
+    
+    print("No Mass Outage Detected")
+
+All data is pushed to ElasticSearch Database
+
+## NmapScanner
+
+Has a script monitor.py that will pull all IP and ports from the masscans and run Nmap scripts. Useful for finding poodle and similar vulnerabilities.
+
+Manual run -
+
+     python3 monitor.py
+
+All data is pushed to ElasticSearch Database
+
+## KaliScanner
+
+ ## niktoscan
+
+- Folder niktoscan has scan.py
+#### Targets are selected from a file called targets.txt
+Targets.txt should have the format 
+
+> NIKTO_TARGET,NETWORK_SEGMENT_TAG,ORG
+
+Each target must end with “,ORG”
+ORG is the tag that pushes the data to the dashboard.
+
+Manual run - 
+
+    python3 scan.py
+
+## wpscanner
+
+Folder wpscanner has “scan.py”
+Targets are selected from ElasticSearch Database. Wpscanner is run with an API key.
+
+    for row in target_list:
+    print(row["target"])
+    cmd = 'wpscan --url ' + row["target"] + ' --enumerate u --api-token KEY --format json > /code/wpscanner/' + row["namespace"] + '.json'
+    print(cmd)
+    os.system(cmd)
+
+Manual run - 
+
+    python3 scan.py
+
+All data is pushed to ElasticSearch Database
+
+## amass
+
+- Folder amass has “scan.py”
+- Targets are selected from ElasticSearch Database.
+
+Manual run - python3 scan.py
+
+## GVMScanner
+
+Must be run manually
+
+Cron script must be run to schedule reports to dashboard.
+
+    “dos2unix cron”
+    
+    “./cron”
+
+Manual run - 
+
+    python3 server.py
+
+## PWPusher
+
+Runs on port 5003
+
+# Configure
+docker-compose.yml
+    
+>      TWILIO_API_CLIENT=
+>      TWILIO_API_KEY=
+>      TWILIO_API_PHONE_TO=
+>      TWILIO_API_PHONE_FROM=
+>      WPSCAN_API_KEY=
+
+Masscanner downdetector.py
+Set Limit for how many need to be down before Texting
+
+` if count_missing > 10:
+        client = Client("CLIENT", "KEY")
+        client.messages.create(to="+PHONENUMBER", from_="+13213042557", body="Downdetector Alert!")
+    else:
+        print("No Mass Outage Detected")`
+Masscanner targets.txt
+
+niktoscan targets.txt
+
+Go to host:5001/index to input hosts
+

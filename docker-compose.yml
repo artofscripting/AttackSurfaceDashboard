@@ -1,0 +1,105 @@
+version: "3.9"
+services:
+  masscan:
+    build: ./MassScanner
+    ports:
+      - "5000:5000"
+    networks:
+      - elastic
+    environment:
+      - TWILIO_API_CLIENT=
+      - TWILIO_API_KEY=
+      - TWILIO_API_PHONE_TO=
+      - TWILIO_API_PHONE_FROM=
+  dashboard:
+    build: ./Dashboard
+    ports:
+      - "80:80"
+    networks:
+      - elastic
+
+  nmap:
+    build: ./NmapScanner
+    networks:
+      - elastic
+  kali:
+    build: ./KaliScanner
+    networks:
+      - elastic
+    environment:
+      - WPSCAN_API_KEY=
+
+  targets:
+    build: ./TargetSelector
+    networks:
+      - elastic
+    ports:
+      - "5001:80"
+
+  elasticsearch:
+    container_name: es-container
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.12.0
+    environment:
+      - xpack.security.enabled=false
+      - "discovery.type=single-node"
+    networks:
+      - elastic
+    ports:
+      - 9200:9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+
+  kibana:
+      #container_name: kb-container
+      image: docker.elastic.co/kibana/kibana:7.12.0
+      environment:
+        - ELASTICSEARCH_HOSTS=http://es-container:9200
+      networks:
+        - elastic
+      depends_on:
+        - elasticsearch
+      ports:
+        - 5601:5601
+
+
+
+  gvm:
+    build: ./GVMScanner
+    #container_name: gvm
+    ports:
+      - "8080:9392"
+      - "5432:5432"
+    env_file:
+      - ./GVMScanner/config/local.env
+    volumes:
+      - ./GVMScanner/config:/config
+      - gvm_data:/usr/local/var/lib
+      - gvm_db:/var/lib/postgresql/data
+    networks:
+      - elastic
+    tty: true
+
+  pwpusher:
+    #container_name: pwpusher
+    image: pglombardo/pwpush-ephemeral:latest
+    ports:
+      - "5003:5000"
+    networks:
+      - elastic
+  sn1per:
+    build: ./Sn1per
+    networks:
+      - elastic
+
+
+networks:
+  elastic:
+    driver: bridge
+
+volumes:
+  gvm_data:
+    name: gvm_data
+  gvm_db:
+    name: gvm_db
+  esdata:
+    name: esdata
