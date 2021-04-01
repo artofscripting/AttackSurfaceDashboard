@@ -14,7 +14,7 @@ To connect to a container.
 
 ` docker exec -it <container name> /bin/bash`
 
-For easy management install Portainer is install on port 9000
+For easy management Portainer is installed on port 9000
 
 # Links
 |Application| host:port|
